@@ -30,12 +30,12 @@
    ========================================================================== */
 
 const firebaseConfig = {
-  apiKey:            "YOUR_API_KEY",
-  authDomain:        "YOUR_PROJECT.firebaseapp.com",
-  projectId:         "YOUR_PROJECT_ID",
-  storageBucket:     "YOUR_PROJECT.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId:             "YOUR_APP_ID"
+  apiKey: "AIzaSyADpHyd5tlDTEQ1JaeS7IfxnEpN81BCvWk",
+  authDomain: "elevate-blog-260d7.firebaseapp.com",
+  projectId: "elevate-blog-260d7",
+  storageBucket: "elevate-blog-260d7.firebasestorage.app",
+  messagingSenderId: "716369645275",
+  appId: "1:716369645275:web:478824cb76f3034a2786fe"
 };
 
 // Initialize Firebase
