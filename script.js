@@ -1,5 +1,6 @@
 /* ==========================================================================
    ELEVATE — Interactive Features
+   Depends on: firebase-config.js, posts.js, auth.js
    ========================================================================== */
 
 (function () {
@@ -18,40 +19,23 @@
           }
         });
       },
-      {
-        threshold: 0.08,
-        rootMargin: '0px 0px -40px 0px',
-      }
+      { threshold: 0.08, rootMargin: '0px 0px -40px 0px' }
     );
-
     revealElements.forEach((el) => revealObserver.observe(el));
   } else {
-    // Fallback: show all elements immediately
     revealElements.forEach((el) => el.classList.add('is-visible'));
   }
 
   // ---- Sticky Header Shadow on Scroll ----
   const header = document.getElementById('site-header');
-
   if (header) {
-    let lastScrollY = 0;
     let ticking = false;
-
     function updateHeader() {
-      if (window.scrollY > 10) {
-        header.classList.add('scrolled');
-      } else {
-        header.classList.remove('scrolled');
-      }
+      header.classList.toggle('scrolled', window.scrollY > 10);
       ticking = false;
     }
-
     window.addEventListener('scroll', () => {
-      lastScrollY = window.scrollY;
-      if (!ticking) {
-        window.requestAnimationFrame(updateHeader);
-        ticking = true;
-      }
+      if (!ticking) { window.requestAnimationFrame(updateHeader); ticking = true; }
     });
   }
 
@@ -63,25 +47,18 @@
     menuToggle.addEventListener('click', () => {
       const isOpen = mobileNav.classList.contains('open');
       menuToggle.classList.toggle('active');
-
       if (isOpen) {
         mobileNav.style.opacity = '0';
         mobileNav.style.transform = 'translateY(-8px)';
-        setTimeout(() => {
-          mobileNav.classList.remove('open');
-          document.body.style.overflow = '';
-        }, 300);
+        setTimeout(() => { mobileNav.classList.remove('open'); document.body.style.overflow = ''; }, 300);
       } else {
         mobileNav.classList.add('open');
         document.body.style.overflow = 'hidden';
-        // Trigger reflow for animation
         void mobileNav.offsetWidth;
         mobileNav.style.opacity = '1';
         mobileNav.style.transform = 'translateY(0)';
       }
     });
-
-    // Close mobile nav when a link is clicked
     mobileNav.querySelectorAll('a').forEach((link) => {
       link.addEventListener('click', () => {
         menuToggle.classList.remove('active');
@@ -101,12 +78,9 @@
     if (searchOverlay) {
       searchOverlay.classList.add('open');
       document.body.style.overflow = 'hidden';
-      setTimeout(() => {
-        if (searchInput) searchInput.focus();
-      }, 300);
+      setTimeout(() => { if (searchInput) searchInput.focus(); }, 300);
     }
   }
-
   function closeSearch() {
     if (searchOverlay) {
       searchOverlay.classList.remove('open');
@@ -115,33 +89,16 @@
     }
   }
 
-  if (searchToggle) {
-    searchToggle.addEventListener('click', openSearch);
-  }
+  if (searchToggle) searchToggle.addEventListener('click', openSearch);
+  if (searchClose) searchClose.addEventListener('click', closeSearch);
 
-  if (searchClose) {
-    searchClose.addEventListener('click', closeSearch);
-  }
-
-  // Close search on Escape key
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-      closeSearch();
-    }
-    // Open search on Cmd/Ctrl + K
-    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-      e.preventDefault();
-      openSearch();
-    }
+    if (e.key === 'Escape') closeSearch();
+    if ((e.metaKey || e.ctrlKey) && e.key === 'k') { e.preventDefault(); openSearch(); }
   });
 
-  // Close search on overlay background click
   if (searchOverlay) {
-    searchOverlay.addEventListener('click', (e) => {
-      if (e.target === searchOverlay) {
-        closeSearch();
-      }
-    });
+    searchOverlay.addEventListener('click', (e) => { if (e.target === searchOverlay) closeSearch(); });
   }
 
   // ---- Reading Progress Bar (Article Page) ----
@@ -150,89 +107,273 @@
 
   if (progressBar && articleBody) {
     let progressTicking = false;
-
     function updateProgress() {
-      const articleRect = articleBody.getBoundingClientRect();
-      const articleStart = articleRect.top + window.scrollY;
-      const articleEnd = articleStart + articleBody.offsetHeight;
-      const viewportHeight = window.innerHeight;
-
-      const scrolled = window.scrollY + viewportHeight;
-      const total = articleEnd - articleStart;
-      const current = scrolled - articleStart;
-
-      let percentage = Math.min(Math.max((current / total) * 100, 0), 100);
-
-      progressBar.style.width = percentage + '%';
+      const rect = articleBody.getBoundingClientRect();
+      const start = rect.top + window.scrollY;
+      const end = start + articleBody.offsetHeight;
+      const scrolled = window.scrollY + window.innerHeight;
+      const pct = Math.min(Math.max(((scrolled - start) / (end - start)) * 100, 0), 100);
+      progressBar.style.width = pct + '%';
       progressTicking = false;
     }
-
     window.addEventListener('scroll', () => {
-      if (!progressTicking) {
-        window.requestAnimationFrame(updateProgress);
-        progressTicking = true;
-      }
+      if (!progressTicking) { window.requestAnimationFrame(updateProgress); progressTicking = true; }
     });
-
-    // Initial calculation
     updateProgress();
   }
 
-  // ---- Newsletter Form (Minimal Feedback) ----
+  // ---- Newsletter Form ----
   const newsletterForm = document.getElementById('newsletter-form');
   const newsletterBtn = document.getElementById('newsletter-submit');
-
   if (newsletterForm && newsletterBtn) {
     newsletterForm.addEventListener('submit', (e) => {
       e.preventDefault();
-      const originalText = newsletterBtn.textContent;
-
+      const orig = newsletterBtn.textContent;
       newsletterBtn.textContent = '✓ Subscribed';
       newsletterBtn.style.background = 'var(--color-accent-hover)';
-
-      setTimeout(() => {
-        newsletterBtn.textContent = originalText;
-        newsletterBtn.style.background = '';
-        newsletterForm.reset();
-      }, 2500);
+      setTimeout(() => { newsletterBtn.textContent = orig; newsletterBtn.style.background = ''; newsletterForm.reset(); }, 2500);
     });
   }
 
-  // ---- Smooth Scroll for Anchor Links ----
+  // ---- Smooth Scroll ----
   document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
     anchor.addEventListener('click', (e) => {
-      const targetId = anchor.getAttribute('href');
-      if (targetId === '#') return;
-
-      const target = document.querySelector(targetId);
+      const id = anchor.getAttribute('href');
+      if (id === '#') return;
+      const target = document.querySelector(id);
       if (target) {
         e.preventDefault();
-        const headerHeight = header ? header.offsetHeight : 0;
-        const targetPosition = target.getBoundingClientRect().top + window.scrollY - headerHeight - 20;
-
-        window.scrollTo({
-          top: targetPosition,
-          behavior: 'smooth',
-        });
+        const h = header ? header.offsetHeight : 0;
+        window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - h - 20, behavior: 'smooth' });
       }
     });
   });
 
-  // ---- Lazy Image Loading Enhancement ----
-  // Add a subtle fade-in effect when lazy images load
+  // ---- Lazy Image Fade ----
   document.querySelectorAll('img[loading="lazy"]').forEach((img) => {
     img.style.opacity = '0';
     img.style.transition = 'opacity 0.5s ease';
-
-    if (img.complete) {
-      img.style.opacity = '1';
-    } else {
-      img.addEventListener('load', () => {
-        img.style.opacity = '1';
-      });
-      img.addEventListener('error', () => {
-        img.style.opacity = '1';
-      });
+    if (img.complete) { img.style.opacity = '1'; }
+    else {
+      img.addEventListener('load', () => { img.style.opacity = '1'; });
+      img.addEventListener('error', () => { img.style.opacity = '1'; });
     }
   });
+
+  // =========================================================================
+  //  DYNAMIC POST GRID (Homepage)
+  // =========================================================================
+  const postGrid = document.getElementById('post-grid');
+  const heroCard = document.getElementById('hero-card');
+
+  if (postGrid && typeof ElevatePosts !== 'undefined') {
+    loadDynamicPosts();
+  }
+
+  async function loadDynamicPosts() {
+    try {
+      const allPosts = await ElevatePosts.getAllPosts();
+
+      // Featured post = first seed-1 post
+      const featured = allPosts.find(p => p.isFeatured) || allPosts[0];
+
+      // Update hero if we have a dynamic featured
+      if (heroCard && featured) {
+        const heroImg = heroCard.querySelector('.hero-image');
+        const heroTitle = heroCard.querySelector('.hero-title');
+        const heroExcerpt = heroCard.querySelector('.hero-excerpt');
+        const heroMeta = heroCard.querySelector('.hero-meta');
+
+        if (heroImg) heroImg.src = featured.image || 'images/hero-featured.png';
+        if (heroTitle) heroTitle.textContent = featured.title;
+        if (heroExcerpt) heroExcerpt.textContent = featured.excerpt;
+        if (heroMeta) {
+          heroMeta.innerHTML = `
+            <span>${featured.authorName}</span>
+            <span class="dot"></span>
+            <span>${ElevatePosts.formatDate(featured.date)}</span>
+            <span class="dot"></span>
+            <span>${featured.readTime}</span>
+          `;
+        }
+        heroCard.href = 'article.html?id=' + featured.id;
+      }
+
+      // Get non-featured posts
+      const gridPosts = allPosts.filter(p => p !== featured);
+
+      // Clear existing grid
+      postGrid.innerHTML = '';
+
+      // Render post cards with native ads every 4th
+      let postCount = 0;
+      gridPosts.forEach((post) => {
+        postCount++;
+
+        // Insert native ad after every 4th post
+        if (postCount > 1 && (postCount - 1) % 4 === 0) {
+          postGrid.innerHTML += renderNativeAd(postCount);
+        }
+
+        postGrid.innerHTML += renderPostCard(post);
+      });
+
+      // Trigger reveal animations on new elements
+      setTimeout(() => {
+        postGrid.querySelectorAll('.reveal').forEach(el => el.classList.add('is-visible'));
+      }, 100);
+
+    } catch (err) {
+      console.warn('Error loading posts:', err);
+    }
+  }
+
+  function renderPostCard(post) {
+    const dateStr = ElevatePosts.formatDate(post.date);
+    const link = 'article.html?id=' + post.id;
+    const imgSrc = post.image || 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" fill="#f5f5f5"><rect width="400" height="300"/><text x="50%" y="50%" fill="#ccc" font-size="14" text-anchor="middle" dy=".3em">No Image</text></svg>');
+
+    return `
+      <article class="post-card reveal is-visible">
+        <a href="${link}">
+          <div class="post-card-image-wrapper">
+            <img src="${imgSrc}" alt="${post.title}" class="post-card-image" loading="lazy">
+          </div>
+        </a>
+        <span class="post-card-category">${post.category}</span>
+        <a href="${link}"><h3 class="post-card-title">${post.title}</h3></a>
+        <p class="post-card-excerpt">${post.excerpt}</p>
+        <div class="post-card-footer">
+          <time class="post-card-date">${dateStr}</time>
+          <a href="${link}" class="read-more">Read <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" width="14" height="14"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg></a>
+        </div>
+      </article>
+    `;
+  }
+
+  function renderNativeAd(index) {
+    return `
+      <div class="ad-card reveal is-visible">
+        <div class="ad-card-inner">
+          <div class="ad-card-image">
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-format="fluid"
+                 data-ad-layout-key="-6t+ed+2i-1n-4w"
+                 data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+                 data-ad-slot="XXXXXXXXXX"></ins>
+          </div>
+          <div class="ad-card-body">
+            <span class="ad-card-label">Sponsored</span>
+            <p class="ad-card-text" style="margin-top:auto;">Ad content loads on live domain with approved AdSense</p>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  // =========================================================================
+  //  DYNAMIC ARTICLE PAGE
+  // =========================================================================
+  const articleMain = document.getElementById('article-main');
+
+  if (articleMain && typeof ElevatePosts !== 'undefined') {
+    const params = new URLSearchParams(window.location.search);
+    const postId = params.get('id');
+
+    if (postId) {
+      loadArticle(postId);
+    }
+    // If no id, show the default hardcoded article (seed-1)
+  }
+
+  async function loadArticle(id) {
+    try {
+      const post = await ElevatePosts.getPostById(id);
+      if (!post) {
+        articleMain.innerHTML = '<div style="text-align:center;padding:4rem 0;"><h2>Post not found</h2><p style="color:var(--color-text-secondary);margin-top:1rem;">This article may have been removed.</p><a href="index.html" style="color:var(--color-accent);margin-top:1rem;display:inline-block;">← Back to Home</a></div>';
+        return;
+      }
+
+      // Update page title
+      document.title = post.title + ' — Elevate';
+
+      // Update article header
+      const breadcrumb = articleMain.querySelector('.article-breadcrumb');
+      if (breadcrumb) {
+        breadcrumb.innerHTML = `
+          <a href="index.html">Home</a><span class="sep">/</span>
+          <a href="categories.html">${post.category}</a><span class="sep">/</span>
+          <span>${post.title.substring(0, 40)}...</span>
+        `;
+      }
+
+      const catBadge = articleMain.querySelector('.article-category');
+      if (catBadge) catBadge.textContent = post.category;
+
+      const titleEl = articleMain.querySelector('.article-title');
+      if (titleEl) titleEl.textContent = post.title;
+
+      const subtitleEl = articleMain.querySelector('.article-subtitle');
+      if (subtitleEl) subtitleEl.textContent = post.excerpt;
+
+      const avatarEl = articleMain.querySelector('.article-author-avatar');
+      if (avatarEl) avatarEl.textContent = post.authorInitials || ElevatePosts.getInitials(post.authorName);
+
+      const nameEl = articleMain.querySelector('.article-author-name');
+      if (nameEl) nameEl.textContent = post.authorName;
+
+      const dateEl = articleMain.querySelector('time');
+      if (dateEl) {
+        dateEl.textContent = ElevatePosts.formatDate(post.date);
+        dateEl.setAttribute('datetime', post.date);
+      }
+
+      // Update read time
+      const metaSpans = articleMain.querySelectorAll('.article-meta span');
+      metaSpans.forEach(span => {
+        if (span.textContent.includes('min read')) span.textContent = post.readTime;
+      });
+
+      // Update featured image
+      const featImg = articleMain.querySelector('.article-featured-image');
+      if (featImg) {
+        if (post.image) {
+          featImg.src = post.image;
+          featImg.alt = post.title;
+        } else {
+          featImg.style.display = 'none';
+        }
+      }
+
+      // Update body
+      const bodyEl = document.getElementById('article-body');
+      if (bodyEl && post.body) {
+        bodyEl.innerHTML = post.body;
+
+        // Re-inject mobile in-article ads
+        const paragraphs = bodyEl.querySelectorAll('p');
+        if (paragraphs.length > 4) {
+          const adHtml = `<div class="ad-in-article ad-in-article-mobile-only"><span class="ad-label">Advertisement</span><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="XXXXXXXXXX" data-ad-format="auto" data-full-width-responsive="true"></ins></div>`;
+          paragraphs[Math.floor(paragraphs.length / 3)].insertAdjacentHTML('afterend', adHtml);
+          if (paragraphs.length > 8) {
+            paragraphs[Math.floor(paragraphs.length * 2 / 3)].insertAdjacentHTML('afterend', adHtml);
+          }
+        }
+      }
+
+      // Update tags based on category
+      const tagsEl = document.getElementById('article-tags');
+      if (tagsEl) {
+        tagsEl.innerHTML = `
+          <a href="categories.html" class="article-tag">${post.category}</a>
+          <a href="categories.html" class="article-tag">Elevate</a>
+        `;
+      }
+
+    } catch (err) {
+      console.error('Error loading article:', err);
+    }
+  }
+
 })();

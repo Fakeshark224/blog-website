@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Write a Post — Elevate</title>
+  <meta name="description" content="Share your story with the Elevate community.">
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>◈</text></svg>">
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="site-header" id="site-header">
+    <div class="container header-inner">
+      <a href="index.html" class="logo" id="logo">elev<span>.</span>ate</a>
+      <nav class="nav-links" id="nav-links">
+        <a href="index.html" id="nav-home">Home</a>
+        <a href="categories.html" id="nav-categories">Categories</a>
+        <a href="about.html" id="nav-about">About</a>
+      </nav>
+      <div class="header-actions">
+        <div class="header-auth" id="header-auth"></div>
+        <button class="menu-toggle" id="menu-toggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+  </header>
+
+  <nav class="mobile-nav" id="mobile-nav">
+    <a href="index.html">Home</a>
+    <a href="categories.html">Categories</a>
+    <a href="about.html">About</a>
+    <div class="mobile-nav-auth" id="mobile-nav-auth"></div>
+  </nav>
+
+  <!-- CREATE POST PAGE -->
+  <main class="create-post-page" id="create-post-page">
+    <div class="container">
+
+      <!-- Auth Gate (shown when not logged in) -->
+      <div class="auth-gate" id="auth-gate" style="display:none;">
+        <div class="auth-gate-inner">
+          <span class="newsletter-badge">Join Elevate</span>
+          <h1 style="font-size:2rem;font-weight:800;letter-spacing:-0.03em;margin-bottom:1rem;">Sign in to start writing</h1>
+          <p style="color:var(--color-text-secondary);margin-bottom:2rem;max-width:400px;">Create an account or log in to share your story with the Elevate community.</p>
+          <div style="display:flex;gap:0.75rem;">
+            <button class="newsletter-btn" id="gate-login">Log In</button>
+            <button class="newsletter-btn" id="gate-signup" style="background:var(--color-text-primary);">Sign Up</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Editor (shown when logged in) -->
+      <div class="editor-container" id="editor-container" style="display:none;">
+
+        <div class="editor-header">
+          <h1 class="editor-title">Write a Post</h1>
+          <div class="editor-actions">
+            <button class="editor-preview-toggle" id="preview-toggle">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="16" height="16"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+              Preview
+            </button>
+            <button class="editor-publish-btn" id="publish-btn">
+              Publish
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="16" height="16"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="editor-layout" id="editor-layout">
+
+          <!-- Form Side -->
+          <div class="editor-form" id="editor-form">
+
+            <div class="create-field">
+              <label for="post-title">Title</label>
+              <input type="text" id="post-title" class="create-input create-input-title" placeholder="Your story headline..." required maxlength="120">
+            </div>
+
+            <div class="create-field-row">
+              <div class="create-field">
+                <label for="post-category">Category</label>
+                <select id="post-category" class="create-select" required>
+                  <option value="">Choose a category</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="create-field">
+              <label for="post-excerpt">Excerpt</label>
+              <textarea id="post-excerpt" class="create-textarea" rows="2" placeholder="A brief summary of your post (shown on cards)..." required maxlength="200"></textarea>
+            </div>
+
+            <div class="create-field">
+              <label>Cover Image</label>
+              <div class="image-upload" id="image-upload">
+                <div class="image-upload-area" id="image-upload-area">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="32" height="32" style="color:var(--color-text-muted)"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z" /></svg>
+                  <span>Drag & drop an image or click to upload</span>
+                  <span style="font-size:0.75rem;color:var(--color-text-muted);">JPG, PNG • Max 2MB</span>
+                  <input type="file" id="image-file" accept="image/jpeg,image/png,image/webp" style="display:none;">
+                </div>
+                <div class="image-preview" id="image-preview" style="display:none;">
+                  <img id="preview-image" src="" alt="Preview">
+                  <button class="image-remove" id="image-remove" type="button">Remove</button>
+                </div>
+              </div>
+              <div class="image-url-option">
+                <span class="image-or">or paste a URL</span>
+                <input type="url" id="post-image-url" class="create-input" placeholder="https://example.com/image.jpg">
+              </div>
+            </div>
+
+            <div class="create-field">
+              <label for="post-body">Body</label>
+              <div class="body-toolbar">
+                <button type="button" class="toolbar-btn" data-tag="h2" title="Heading"><strong>H</strong></button>
+                <button type="button" class="toolbar-btn" data-tag="bold" title="Bold"><strong>B</strong></button>
+                <button type="button" class="toolbar-btn" data-tag="italic" title="Italic"><em>I</em></button>
+                <button type="button" class="toolbar-btn" data-tag="blockquote" title="Quote">"</button>
+                <button type="button" class="toolbar-btn" data-tag="ul" title="List">•</button>
+              </div>
+              <textarea id="post-body" class="create-textarea create-textarea-body" rows="16" placeholder="Write your article here...
+
+Use the toolbar above or write HTML directly:
+<h2>Section Heading</h2>
+<p>Your paragraph text...</p>
+<blockquote>A meaningful quote...</blockquote>" required></textarea>
+            </div>
+          </div>
+
+          <!-- Live Preview Side -->
+          <div class="editor-preview" id="editor-preview" style="display:none;">
+            <div class="preview-label">Live Preview</div>
+            <div class="preview-content" id="preview-content">
+              <h1 class="preview-title" id="preview-title-text">Your title here...</h1>
+              <div class="preview-meta">
+                <span id="preview-category-text">Category</span>
+                <span class="dot"></span>
+                <span id="preview-date-text"></span>
+              </div>
+              <div class="preview-image" id="preview-image-container"></div>
+              <div class="preview-body article-body" id="preview-body-text"></div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Success message -->
+        <div class="publish-success" id="publish-success" style="display:none;">
+          <div class="publish-success-inner">
+            <span style="font-size:3rem;">🎉</span>
+            <h2>Published Successfully!</h2>
+            <p>Your post is now live on Elevate.</p>
+            <div style="display:flex;gap:0.75rem;margin-top:1.5rem;">
+              <a href="index.html" class="newsletter-btn">View Homepage</a>
+              <button class="newsletter-btn" id="write-another" style="background:var(--color-text-primary);">Write Another</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="site-footer" id="site-footer">
+    <div class="container">
+      <div class="footer-bottom">
+        <p class="footer-copy">&copy; 2026 Elevate. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="firebase-config.js"></script>
+  <script src="posts.js"></script>
+  <script src="auth.js"></script>
+  <script src="script.js"></script>
+
+  <script>
+  (function() {
+    'use strict';
+
+    const authGate = document.getElementById('auth-gate');
+    const editorContainer = document.getElementById('editor-container');
+    const publishSuccess = document.getElementById('publish-success');
+    const publishBtn = document.getElementById('publish-btn');
+    const previewToggle = document.getElementById('preview-toggle');
+    const editorForm = document.getElementById('editor-form');
+    const editorPreview = document.getElementById('editor-preview');
+
+    // Populate categories
+    const catSelect = document.getElementById('post-category');
+    ElevatePosts.CATEGORIES.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c.name;
+      opt.textContent = c.name;
+      catSelect.appendChild(opt);
+    });
+
+    // Auth gate
+    fbAuth.onAuthStateChanged(user => {
+      if (user) {
+        authGate.style.display = 'none';
+        editorContainer.style.display = '';
+      } else {
+        authGate.style.display = '';
+        editorContainer.style.display = 'none';
+      }
+    });
+
+    document.getElementById('gate-login').addEventListener('click', () => ElevateAuth.showLoginModal());
+    document.getElementById('gate-signup').addEventListener('click', () => ElevateAuth.showSignupModal());
+
+    // Image upload
+    const uploadArea = document.getElementById('image-upload-area');
+    const fileInput = document.getElementById('image-file');
+    const imagePreview = document.getElementById('image-preview');
+    const previewImg = document.getElementById('preview-image');
+    const removeBtn = document.getElementById('image-remove');
+    let uploadedImageData = '';
+
+    uploadArea.addEventListener('click', () => fileInput.click());
+    uploadArea.addEventListener('dragover', (e) => { e.preventDefault(); uploadArea.classList.add('dragover'); });
+    uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('dragover'));
+    uploadArea.addEventListener('drop', (e) => {
+      e.preventDefault();
+      uploadArea.classList.remove('dragover');
+      if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+    });
+    fileInput.addEventListener('change', () => { if (fileInput.files[0]) handleFile(fileInput.files[0]); });
+
+    function handleFile(file) {
+      if (file.size > 2 * 1024 * 1024) { alert('Image must be under 2MB'); return; }
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        // Resize using canvas
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const maxW = 800;
+          let w = img.width, h = img.height;
+          if (w > maxW) { h = (maxW / w) * h; w = maxW; }
+          canvas.width = w; canvas.height = h;
+          canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+          uploadedImageData = canvas.toDataURL('image/jpeg', 0.8);
+          previewImg.src = uploadedImageData;
+          uploadArea.style.display = 'none';
+          imagePreview.style.display = '';
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    removeBtn.addEventListener('click', () => {
+      uploadedImageData = '';
+      previewImg.src = '';
+      fileInput.value = '';
+      uploadArea.style.display = '';
+      imagePreview.style.display = 'none';
+    });
+
+    // Preview toggle
+    let previewVisible = false;
+    previewToggle.addEventListener('click', () => {
+      previewVisible = !previewVisible;
+      if (previewVisible) {
+        editorPreview.style.display = '';
+        previewToggle.classList.add('active');
+        updatePreview();
+      } else {
+        editorPreview.style.display = 'none';
+        previewToggle.classList.remove('active');
+      }
+    });
+
+    // Live preview updates
+    ['post-title', 'post-category', 'post-body', 'post-excerpt'].forEach(id => {
+      document.getElementById(id).addEventListener('input', () => {
+        if (previewVisible) updatePreview();
+      });
+    });
+
+    function updatePreview() {
+      document.getElementById('preview-title-text').textContent = document.getElementById('post-title').value || 'Your title here...';
+      document.getElementById('preview-category-text').textContent = document.getElementById('post-category').value || 'Category';
+      document.getElementById('preview-date-text').textContent = new Date().toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
+
+      let body = document.getElementById('post-body').value;
+      // Auto-wrap plain text in <p> tags
+      if (body && !body.includes('<')) {
+        body = body.split('\n\n').map(p => '<p>' + p.replace(/\n/g, '<br>') + '</p>').join('');
+      }
+      document.getElementById('preview-body-text').innerHTML = body;
+
+      const imgUrl = uploadedImageData || document.getElementById('post-image-url').value;
+      const imgContainer = document.getElementById('preview-image-container');
+      if (imgUrl) {
+        imgContainer.innerHTML = '<img src="' + imgUrl + '" style="width:100%;border-radius:12px;margin-bottom:1.5rem;" alt="Cover">';
+      } else {
+        imgContainer.innerHTML = '';
+      }
+    }
+
+    // Toolbar
+    document.querySelectorAll('.toolbar-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const textarea = document.getElementById('post-body');
+        const start = textarea.selectionStart;
+        const end = textarea.selectionEnd;
+        const selected = textarea.value.substring(start, end);
+        const tag = btn.dataset.tag;
+        let insert = '';
+
+        switch(tag) {
+          case 'h2': insert = '<h2>' + (selected || 'Heading') + '</h2>'; break;
+          case 'bold': insert = '<strong>' + (selected || 'bold text') + '</strong>'; break;
+          case 'italic': insert = '<em>' + (selected || 'italic text') + '</em>'; break;
+          case 'blockquote': insert = '<blockquote>' + (selected || 'Quote text') + '</blockquote>'; break;
+          case 'ul': insert = '<ul>\n  <li>' + (selected || 'List item') + '</li>\n</ul>'; break;
+        }
+
+        textarea.value = textarea.value.substring(0, start) + insert + textarea.value.substring(end);
+        textarea.focus();
+        if (previewVisible) updatePreview();
+      });
+    });
+
+    // Publish
+    publishBtn.addEventListener('click', async () => {
+      const title = document.getElementById('post-title').value.trim();
+      const category = document.getElementById('post-category').value;
+      const excerpt = document.getElementById('post-excerpt').value.trim();
+      let body = document.getElementById('post-body').value.trim();
+      const imageUrl = uploadedImageData || document.getElementById('post-image-url').value.trim();
+
+      if (!title || !category || !excerpt || !body) {
+        alert('Please fill in all required fields (title, category, excerpt, body).');
+        return;
+      }
+
+      // Auto-wrap plain text
+      if (!body.includes('<')) {
+        body = body.split('\n\n').map(p => '<p>' + p.replace(/\n/g, '<br>') + '</p>').join('');
+      }
+
+      publishBtn.textContent = 'Publishing...';
+      publishBtn.disabled = true;
+
+      try {
+        await ElevatePosts.createPost({
+          title, category, excerpt, body, image: imageUrl
+        });
+
+        editorContainer.querySelector('.editor-header').style.display = 'none';
+        document.getElementById('editor-layout').style.display = 'none';
+        publishSuccess.style.display = '';
+      } catch (err) {
+        alert('Error publishing: ' + err.message);
+        publishBtn.textContent = 'Publish';
+        publishBtn.disabled = false;
+      }
+    });
+
+    // Write another
+    document.getElementById('write-another').addEventListener('click', () => {
+      document.getElementById('post-title').value = '';
+      document.getElementById('post-category').value = '';
+      document.getElementById('post-excerpt').value = '';
+      document.getElementById('post-body').value = '';
+      document.getElementById('post-image-url').value = '';
+      uploadedImageData = '';
+      previewImg.src = '';
+      uploadArea.style.display = '';
+      imagePreview.style.display = 'none';
+      publishBtn.textContent = 'Publish';
+      publishBtn.disabled = false;
+      editorContainer.querySelector('.editor-header').style.display = '';
+      document.getElementById('editor-layout').style.display = '';
+      publishSuccess.style.display = 'none';
+    });
+
+    // Set today's date in preview
+    document.getElementById('preview-date-text').textContent = new Date().toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
+
+  })();
+  </script>
+</body>
+</html>
