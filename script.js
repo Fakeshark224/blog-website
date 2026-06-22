@@ -236,7 +236,7 @@
                    style="display:block"
                    data-ad-format="fluid"
                    data-ad-layout-key="-fb+5w+4e-db+86"
-                   data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+                   data-ad-client="ca-pub-6732536198242513"
                    data-ad-slot="1234567890"></ins>
             </div>`;
         }
@@ -369,7 +369,7 @@
         // Re-inject mobile in-article ads
         const paragraphs = bodyEl.querySelectorAll('p');
         if (paragraphs.length > 4) {
-          const adHtml = `<div class="ad-in-article ad-in-article-mobile-only"><span class="ad-label">Advertisement</span><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="XXXXXXXXXX" data-ad-format="auto" data-full-width-responsive="true"></ins></div>`;
+          const adHtml = `<div class="ad-in-article ad-in-article-mobile-only"><span class="ad-label">Advertisement</span><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6732536198242513" data-ad-slot="XXXXXXXXXX" data-ad-format="auto" data-full-width-responsive="true"></ins></div>`;
           paragraphs[Math.floor(paragraphs.length / 3)].insertAdjacentHTML('afterend', adHtml);
           if (paragraphs.length > 8) {
             paragraphs[Math.floor(paragraphs.length * 2 / 3)].insertAdjacentHTML('afterend', adHtml);
