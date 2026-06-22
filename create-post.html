@@ -22,9 +22,18 @@
         <a href="index.html" id="nav-home">Home</a>
         <a href="categories.html" id="nav-categories">Categories</a>
         <a href="about.html" id="nav-about">About</a>
+        <a href="sponsor.html" id="nav-sponsor">Advertise</a>
       </nav>
       <div class="header-actions">
         <div class="header-auth" id="header-auth"></div>
+        <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
+          <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+          </svg>
+          <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+          </svg>
+        </button>
         <button class="menu-toggle" id="menu-toggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
       </div>
     </div>
@@ -34,6 +43,7 @@
     <a href="index.html">Home</a>
     <a href="categories.html">Categories</a>
     <a href="about.html">About</a>
+    <a href="sponsor.html">Advertise</a>
     <div class="mobile-nav-auth" id="mobile-nav-auth"></div>
   </nav>
 
@@ -64,6 +74,12 @@
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="16" height="16"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
               Preview
             </button>
+            <select id="publish-type" class="create-select" style="width: auto; padding: 0 2rem 0 1rem; height: 40px; border-radius: 20px; font-weight: 500; font-size: var(--font-size-sm); background-color: var(--color-surface); border: 1px solid var(--color-border); margin-right: 0.5rem;">
+              <option value="normal">Normal Publish</option>
+              <option value="sponsored-7">Sponsored (7 Days)</option>
+              <option value="sponsored-14">Sponsored (14 Days)</option>
+              <option value="sponsored-30">Sponsored (30 Days)</option>
+            </select>
             <button class="editor-publish-btn" id="publish-btn">
               Publish
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="16" height="16"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
@@ -172,7 +188,7 @@ Use the toolbar above or write HTML directly:
   <footer class="site-footer" id="site-footer">
     <div class="container">
       <div class="footer-bottom">
-        <p class="footer-copy">&copy; 2026 Elevate. All rights reserved.</p>
+        <p class="footer-copy">&copy; 2026 Elevate. Published by Whitcroft Holdings, a subsidiary of Sterlingmere Holdings. All rights reserved.</p>
       </div>
     </div>
   </footer>
@@ -340,6 +356,8 @@ Use the toolbar above or write HTML directly:
       let body = document.getElementById('post-body').value.trim();
       const imageUrl = uploadedImageData || document.getElementById('post-image-url').value.trim();
 
+      const publishType = document.getElementById('publish-type').value;
+
       if (!title || !category || !excerpt || !body) {
         alert('Please fill in all required fields (title, category, excerpt, body).');
         return;
@@ -354,12 +372,22 @@ Use the toolbar above or write HTML directly:
       publishBtn.disabled = true;
 
       try {
+        let sponsoredDuration = null;
+        if (publishType.startsWith('sponsored-')) {
+          sponsoredDuration = publishType.split('-')[1] + ' Days';
+        }
+
         await ElevatePosts.createPost({
-          title, category, excerpt, body, image: imageUrl
+          title, category, excerpt, body, image: imageUrl, sponsoredDuration
         });
 
         editorContainer.querySelector('.editor-header').style.display = 'none';
         document.getElementById('editor-layout').style.display = 'none';
+        
+        if (sponsoredDuration) {
+          document.querySelector('#publish-success p').innerHTML = 'Your sponsored post request has been submitted.<br>The admin will contact you regarding payment, and it will be published upon approval.';
+        }
+        
         publishSuccess.style.display = '';
       } catch (err) {
         alert('Error publishing: ' + err.message);

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Subscribe — Elevate</title>
+  <meta name="description" content="Become a subscriber to Elevate for priority publishing and premium features.">
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>◈</text></svg>">
+  <script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+
+  <!-- ========== HEADER ========== -->
+  <header class="site-header" id="site-header">
+    <div class="container header-inner">
+      <a href="index.html" class="logo" id="logo">elev<span>.</span>ate</a>
+
+      <nav class="nav-links" id="nav-links">
+        <a href="index.html" id="nav-home">Home</a>
+        <a href="categories.html" id="nav-categories">Categories</a>
+        <a href="about.html" id="nav-about">About</a>
+        <a href="sponsor.html" id="nav-sponsor">Advertise</a>
+      </nav>
+
+      <div class="header-actions">
+        <!-- Auth buttons injected by auth.js -->
+        <div class="header-auth" id="header-auth"></div>
+        <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
+          <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+          </svg>
+          <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+          </svg>
+        </button>
+        <button class="search-btn" id="search-toggle" aria-label="Open search">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+          </svg>
+        </button>
+        <button class="menu-toggle" id="menu-toggle" aria-label="Toggle menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Nav -->
+  <nav class="mobile-nav" id="mobile-nav">
+    <a href="index.html">Home</a>
+    <a href="categories.html">Categories</a>
+    <a href="about.html">About</a>
+    <a href="sponsor.html">Advertise</a>
+    <div class="mobile-nav-auth" id="mobile-nav-auth"></div>
+  </nav>
+
+  <!-- ========== SEARCH OVERLAY ========== -->
+  <div class="search-overlay" id="search-overlay">
+    <button class="search-close" id="search-close" aria-label="Close search">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12" /></svg>
+    </button>
+    <div class="search-overlay-inner">
+      <div class="search-input-wrapper">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" /></svg>
+        <input type="text" class="search-overlay-input" id="search-input" placeholder="Search articles..." autocomplete="off">
+      </div>
+      <p class="search-hint">Press <kbd>Esc</kbd> to close</p>
+    </div>
+  </div>
+
+  <main>
+    <section class="hero" style="padding: var(--space-16) 0 var(--space-10) 0; text-align: center;">
+      <div class="container reveal">
+        <span class="hero-tag" style="margin: 0 auto var(--space-4) auto; display: inline-block;">Premium Access</span>
+        <h1 class="hero-title" style="font-size: var(--font-size-4xl); margin-bottom: var(--space-4);">Become a Subscriber</h1>
+        <p class="hero-excerpt" style="max-width: 600px; margin: 0 auto; color: var(--color-text-secondary);">Join our community of premium authors. Bypassing the admin approval queue and getting your thoughts published instantly.</p>
+      </div>
+    </section>
+
+    <section class="container" style="padding-bottom: var(--space-20); max-width: 800px; margin: 0 auto;">
+      <div class="reveal" style="background: var(--color-surface); border-radius: var(--radius-xl); padding: var(--space-10); border: 1px solid var(--color-border); text-align: center; box-shadow: var(--shadow-sm);">
+        <h2 style="font-size: var(--font-size-2xl); font-weight: 700; margin-bottom: var(--space-2);">Creator Pro</h2>
+        <div style="font-size: var(--font-size-5xl); font-weight: 800; color: var(--color-accent); margin-bottom: var(--space-6);">$10<span style="font-size: var(--font-size-base); color: var(--color-text-secondary); font-weight: 400;">/month</span></div>
+        
+        <ul style="list-style: none; padding: 0; margin: 0 0 var(--space-8) 0; text-align: left; display: inline-block;">
+          <li style="margin-bottom: var(--space-3); display: flex; align-items: center; gap: var(--space-3);">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20" style="color: var(--color-accent); flex-shrink: 0;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+            <span><strong>Instant Publishing:</strong> Bypass the admin approval queue completely.</span>
+          </li>
+          <li style="margin-bottom: var(--space-3); display: flex; align-items: center; gap: var(--space-3);">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20" style="color: var(--color-accent); flex-shrink: 0;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+            <span><strong>Priority Support:</strong> Direct line to our editorial team.</span>
+          </li>
+          <li style="margin-bottom: var(--space-3); display: flex; align-items: center; gap: var(--space-3);">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20" style="color: var(--color-accent); flex-shrink: 0;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+            <span><strong>Subscriber Badge:</strong> Exclusive badge on your author profile.</span>
+          </li>
+        </ul>
+
+        <div>
+          <!-- Replace this href with your Stripe Payment Link -->
+          <a href="#" target="_blank" class="newsletter-btn" style="width: 100%; max-width: 300px; display: inline-flex; justify-content: center; padding: var(--space-4) var(--space-6); font-size: var(--font-size-md);">Subscribe via Stripe</a>
+          <p style="margin-top: var(--space-4); font-size: var(--font-size-sm); color: var(--color-text-muted);">After paying, your account will be manually upgraded within 24 hours.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ========== FOOTER ========== -->
+  <footer class="site-footer" id="site-footer">
+    <div class="container">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <a href="index.html" class="logo">elev<span>.</span>ate</a>
+          <p>Exploring the intersection of creativity, technology, and intentional living.</p>
+          <div class="social-links">
+            <a href="#" aria-label="Twitter"><svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/></svg></a>
+            <a href="https://instagram.com/sterlingmere_holdings" aria-label="Instagram"><svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.20 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></a>
+          </div>
+        </div>
+        <div class="footer-links">
+          <h4>Platform</h4>
+          <a href="index.html">Home</a>
+          <a href="categories.html">Categories</a>
+          <a href="about.html">About</a>
+          <a href="sponsor.html">Advertise</a>
+        </div>
+        <div class="footer-links">
+          <h4>Legal</h4>
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+          <a href="#">Cookie Policy</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p class="footer-copy">&copy; 2026 Elevate. Published by Whitcroft Holdings, a subsidiary of Sterlingmere Holdings. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="firebase-config.js"></script>
+  <script src="auth.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

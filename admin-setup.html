@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Setup</title>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <style>
+    body { font-family: sans-serif; padding: 20px; background: #f8f9fa; }
+    #log { background: white; padding: 20px; border-radius: 8px; border: 1px solid #ccc; font-family: monospace; white-space: pre-wrap; font-size: 16px; }
+  </style>
+</head>
+<body>
+  <h1>Elevate Admin Account Recovery</h1>
+  <p>This script will automatically create/login your admin account.</p>
+  <button id="start-btn" style="padding: 10px 20px; font-size: 16px; background: #7C9A82; color: white; border: none; border-radius: 4px; cursor: pointer;">Start Account Recovery</button>
+  <br><br>
+  <div id="log">Waiting to start...</div>
+
+  <script src="firebase-config.js"></script>
+  <script>
+    const logEl = document.getElementById('log');
+    function log(msg) {
+      console.log(msg);
+      logEl.textContent += '\n' + msg;
+    }
+
+    document.getElementById('start-btn').addEventListener('click', async () => {
+      logEl.textContent = 'Starting...';
+      const email = 'whitcroftholdings@gmail.com';
+      const password = 'klvb@5578';
+
+      // 1. Sign out first to clear caches
+      log('Signing out any cached users...');
+      await firebase.auth().signOut();
+
+      // 2. Try to Sign In
+      log(`Attempting to log in as ${email}...`);
+      try {
+        const cred = await firebase.auth().signInWithEmailAndPassword(email, password);
+        log(`✅ Successfully logged in! User ID: ${cred.user.uid}`);
+        
+        log('Creating/Updating Firestore profile...');
+        await firebase.firestore().collection('users').doc(cred.user.uid).set({
+          name: 'Elevate Admin',
+          email: email,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        }, { merge: true });
+        
+        log('✅ Firestore profile saved! You can now close this page and go to the main website.');
+        return;
+      } catch (err) {
+        log(`Login failed: ${err.code} - ${err.message}`);
+        if (err.code !== 'auth/user-not-found' && err.code !== 'auth/invalid-credential') {
+          log('Stopping due to unexpected login error.');
+          return;
+        }
+      }
+
+      // 3. If login failed because user not found, try to Sign Up
+      log(`User not found. Attempting to create account ${email}...`);
+      try {
+        const cred = await firebase.auth().createUserWithEmailAndPassword(email, password);
+        log(`✅ Successfully created account! User ID: ${cred.user.uid}`);
+        
+        await cred.user.updateProfile({ displayName: 'Elevate Admin' });
+        
+        log('Creating Firestore profile...');
+        await firebase.firestore().collection('users').doc(cred.user.uid).set({
+          name: 'Elevate Admin',
+          email: email,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        
+        log('✅ Account fully set up! You can now close this page and go to the main website.');
+      } catch (err) {
+        log(`❌ Failed to create account: ${err.code} - ${err.message}`);
+        log('Please take a screenshot of this error and show it to me.');
+      }
+    });
+  </script>
+</body>
+</html>

@@ -6,6 +6,27 @@
 (function () {
   'use strict';
 
+  // ---- Dark Mode Toggle ----
+  const themeToggle = document.getElementById('theme-toggle');
+  
+  // Check localStorage or system preference
+  if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+    document.body.classList.add('dark-mode');
+  } else {
+    document.body.classList.remove('dark-mode');
+  }
+
+  if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('dark-mode');
+      if (document.body.classList.contains('dark-mode')) {
+        localStorage.setItem('theme', 'dark');
+      } else {
+        localStorage.setItem('theme', 'light');
+      }
+    });
+  }
+
   // ---- Intersection Observer for Reveal Animations ----
   const revealElements = document.querySelectorAll('.reveal');
 
@@ -206,13 +227,18 @@
       postGrid.innerHTML = '';
 
       // Render post cards with native ads every 4th
-      let postCount = 0;
-      gridPosts.forEach((post) => {
-        postCount++;
-
-        // Insert native ad after every 4th post
-        if (postCount > 1 && (postCount - 1) % 4 === 0) {
-          postGrid.innerHTML += renderNativeAd(postCount);
+      gridPosts.forEach((post, index) => {
+        // Insert In-Feed AdSense block after the 3rd and 7th posts
+        if (index === 2 || index === 6) {
+          postGrid.innerHTML += `
+            <div class="ad-slot-in-feed-card" style="text-align:center;">
+              <ins class="adsbygoogle"
+                   style="display:block"
+                   data-ad-format="fluid"
+                   data-ad-layout-key="-fb+5w+4e-db+86"
+                   data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+                   data-ad-slot="1234567890"></ins>
+            </div>`;
         }
 
         postGrid.innerHTML += renderPostCard(post);
@@ -221,6 +247,12 @@
       // Trigger reveal animations on new elements
       setTimeout(() => {
         postGrid.querySelectorAll('.reveal').forEach(el => el.classList.add('is-visible'));
+        // Initialize AdSense for dynamically inserted ads
+        postGrid.querySelectorAll('.adsbygoogle').forEach(() => {
+          try {
+            (window.adsbygoogle = window.adsbygoogle || []).push({});
+          } catch (e) {}
+        });
       }, 100);
 
     } catch (err) {
@@ -232,11 +264,13 @@
     const dateStr = ElevatePosts.formatDate(post.date);
     const link = 'article.html?id=' + post.id;
     const imgSrc = post.image || 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" fill="#f5f5f5"><rect width="400" height="300"/><text x="50%" y="50%" fill="#ccc" font-size="14" text-anchor="middle" dy=".3em">No Image</text></svg>');
+    const sponsoredBadge = post.isSponsored ? '<span class="sponsored-badge">Sponsored</span>' : '';
 
     return `
       <article class="post-card reveal is-visible">
         <a href="${link}">
           <div class="post-card-image-wrapper">
+            ${sponsoredBadge}
             <img src="${imgSrc}" alt="${post.title}" class="post-card-image" loading="lazy">
           </div>
         </a>
@@ -251,26 +285,7 @@
     `;
   }
 
-  function renderNativeAd(index) {
-    return `
-      <div class="ad-card reveal is-visible">
-        <div class="ad-card-inner">
-          <div class="ad-card-image">
-            <ins class="adsbygoogle"
-                 style="display:block"
-                 data-ad-format="fluid"
-                 data-ad-layout-key="-6t+ed+2i-1n-4w"
-                 data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
-                 data-ad-slot="XXXXXXXXXX"></ins>
-          </div>
-          <div class="ad-card-body">
-            <span class="ad-card-label">Sponsored</span>
-            <p class="ad-card-text" style="margin-top:auto;">Ad content loads on live domain with approved AdSense</p>
-          </div>
-        </div>
-      </div>
-    `;
-  }
+  // renderNativeAd replaced by dynamic in-feed ads from Firestore (see ads.js)
 
   // =========================================================================
   //  DYNAMIC ARTICLE PAGE

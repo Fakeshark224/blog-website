@@ -209,6 +209,19 @@
     };
 
     const ref = await db.collection('posts').add(doc);
+    
+    // Handle Sponsored Post Request
+    if (postData.sponsoredDuration && window.ElevateAds) {
+      await window.ElevateAds.createSponsorRequest({
+        postId: ref.id,
+        postTitle: doc.title,
+        requesterName: doc.authorName,
+        requesterEmail: user.email,
+        duration: postData.sponsoredDuration,
+        message: 'Requested via Create Post form'
+      });
+    }
+    
     return { id: ref.id, ...doc };
   }
 

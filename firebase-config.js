@@ -15,15 +15,29 @@
    rules_version = '2';
    service cloud.firestore {
      match /databases/{database}/documents {
+       function isAdmin() {
+         return request.auth != null && request.auth.token.email == 'whitcroftholdings@gmail.com';
+       }
        match /posts/{postId} {
          allow read: if true;
          allow create: if request.auth != null;
-         allow update, delete: if request.auth != null
-                                && request.auth.uid == resource.data.authorId;
+         allow update, delete: if isAdmin() || (request.auth != null && request.auth.uid == resource.data.authorId);
        }
        match /users/{userId} {
          allow read: if true;
          allow write: if request.auth != null && request.auth.uid == userId;
+       }
+       match /ads/{adId} {
+         allow read: if true;
+         allow write: if isAdmin();
+       }
+       match /admin_config/{document} {
+         allow read, write: if isAdmin();
+       }
+       match /sponsored_requests/{requestId} {
+         allow read: if isAdmin();
+         allow create: if request.auth != null;
+         allow update, delete: if isAdmin();
        }
      }
    }
