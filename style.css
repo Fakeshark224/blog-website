@@ -79,25 +79,25 @@
 
 /* ---------- Dark Mode Variables ---------- */
 body.dark-mode {
-  --color-bg:           #121212;
-  --color-bg-subtle:    #1A1A1A;
-  --color-surface:      #222222;
-  --color-border:       #333333;
-  --color-border-light: #2A2A2A;
-  --color-text-primary: #F0F0F0;
-  --color-text-secondary: #A0A0A0;
-  --color-text-muted:   #777777;
-  --color-accent:       #8AAB90; /* slightly lighter for dark mode */
-  --color-accent-hover: #7C9A82;
-  --color-accent-light: #2A362D;
-  --color-overlay:      rgba(255, 255, 255, 0.05);
-  --color-ad-bg:        #181818;
-  --color-ad-border:    #2A2A2A;
-  --color-ad-label:     #666666;
+  --color-bg:           #0A0A0A;
+  --color-bg-subtle:    #141414;
+  --color-surface:      #1C1C1E;
+  --color-border:       #2C2C2E;
+  --color-border-light: #232326;
+  --color-text-primary: #F5F5F7;
+  --color-text-secondary: #A1A1A6;
+  --color-text-muted:   #6E6E73;
+  --color-accent:       #4ADE80;
+  --color-accent-hover: #22C55E;
+  --color-accent-light: #162E1E;
+  --color-overlay:      rgba(255, 255, 255, 0.04);
+  --color-ad-bg:        #141414;
+  --color-ad-border:    #2C2C2E;
+  --color-ad-label:     #6E6E73;
   
-  --shadow-sm:  0 1px 2px rgba(0,0,0,0.4);
-  --shadow-md:  0 4px 12px rgba(0,0,0,0.5);
-  --shadow-lg:  0 12px 32px rgba(0,0,0,0.6);
+  --shadow-sm:  0 1px 2px rgba(0,0,0,0.5);
+  --shadow-md:  0 4px 12px rgba(0,0,0,0.6);
+  --shadow-lg:  0 12px 32px rgba(0,0,0,0.7);
 }
 
 /* ---------- Reset & Base ---------- */
