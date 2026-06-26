@@ -1287,6 +1287,10 @@ body.dark-mode .site-header {
               visibility var(--duration-normal) var(--ease-out);
 }
 
+body.dark-mode .search-overlay {
+  background: rgba(18, 18, 18, 0.97);
+}
+
 .search-overlay.open {
   opacity: 1;
   visibility: visible;
@@ -1654,6 +1658,12 @@ body.dark-mode .site-header {
   font-size: var(--font-size-sm);
   margin-bottom: var(--space-4);
   border: 1px solid #fecaca;
+}
+
+body.dark-mode .auth-error {
+  background: rgba(220, 38, 38, 0.12);
+  color: #f87171;
+  border-color: rgba(220, 38, 38, 0.3);
 }
 
 .auth-field {
@@ -2560,6 +2570,11 @@ body.dark-mode .site-header {
   padding: 2px 6px;
   border-radius: 3px;
   backdrop-filter: blur(4px);
+}
+
+body.dark-mode .ad-slot-inner .ad-label {
+  background: rgba(0,0,0,0.6);
+  color: rgba(255,255,255,0.6);
 }
 
 /* Sidebar Ad */

@@ -502,6 +502,125 @@
         gap: 12px;
       }
     }
+
+    /* ========================================
+       DARK MODE OVERRIDES (Admin Dashboard)
+       ======================================== */
+    body.dark-mode .gate-card {
+      background: var(--color-surface);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    }
+    body.dark-mode .gate-card .logo {
+      color: var(--color-text-primary);
+    }
+    body.dark-mode .gate-title {
+      color: var(--color-text-primary);
+    }
+    body.dark-mode .gate-subtitle {
+      color: var(--color-text-muted);
+    }
+    body.dark-mode .gate-field label {
+      color: var(--color-text-secondary);
+    }
+    body.dark-mode .gate-input {
+      background: var(--color-bg);
+      border-color: var(--color-border);
+      color: var(--color-text-primary);
+    }
+    body.dark-mode .gate-input:focus {
+      background: var(--color-bg-subtle);
+      border-color: var(--color-accent);
+    }
+
+    body.dark-mode .admin-content {
+      background: var(--color-bg);
+    }
+    body.dark-mode .admin-page-title {
+      color: var(--color-text-primary);
+    }
+    body.dark-mode .admin-tabs {
+      border-bottom-color: var(--color-border);
+    }
+    body.dark-mode .admin-tab {
+      color: var(--color-text-muted);
+    }
+    body.dark-mode .admin-tab:hover,
+    body.dark-mode .admin-tab.active {
+      color: var(--color-text-primary);
+    }
+    body.dark-mode .stat-card {
+      background: var(--color-surface);
+      border-color: var(--color-border);
+    }
+    body.dark-mode .stat-number {
+      color: var(--color-text-primary);
+    }
+    body.dark-mode .stat-label {
+      color: var(--color-text-muted);
+    }
+    body.dark-mode .admin-card {
+      background: var(--color-surface);
+      border-color: var(--color-border);
+    }
+    body.dark-mode .admin-card-title {
+      color: var(--color-text-primary);
+    }
+    body.dark-mode .admin-table th {
+      color: var(--color-text-muted);
+      border-bottom-color: var(--color-border);
+    }
+    body.dark-mode .admin-table td {
+      color: var(--color-text-secondary);
+      border-bottom-color: var(--color-border-light);
+    }
+    body.dark-mode .admin-table tbody tr:nth-child(even) {
+      background: var(--color-bg-subtle);
+    }
+    body.dark-mode .admin-table tbody tr:hover {
+      background: rgba(255, 255, 255, 0.04);
+    }
+    body.dark-mode .btn-outline {
+      color: var(--color-text-primary);
+      border-color: var(--color-border);
+    }
+    body.dark-mode .btn-outline:hover {
+      border-color: var(--color-text-primary);
+      background: var(--color-surface);
+    }
+    body.dark-mode .ad-form-card {
+      background: var(--color-surface);
+      border-color: var(--color-accent);
+    }
+    body.dark-mode .form-group label {
+      color: var(--color-text-secondary);
+    }
+    body.dark-mode .form-group input,
+    body.dark-mode .form-group select {
+      background: var(--color-bg);
+      border-color: var(--color-border);
+      color: var(--color-text-primary);
+    }
+    body.dark-mode .form-group input:focus,
+    body.dark-mode .form-group select:focus {
+      background: var(--color-bg-subtle);
+      border-color: var(--color-accent);
+    }
+    body.dark-mode .form-group .img-preview {
+      border-color: var(--color-border);
+    }
+    body.dark-mode .section-topbar h3 {
+      color: var(--color-text-primary);
+    }
+    body.dark-mode .admin-footer {
+      background: var(--color-surface);
+      border-top-color: var(--color-border);
+    }
+    body.dark-mode .admin-footer p {
+      color: var(--color-text-muted);
+    }
+    body.dark-mode .empty-state {
+      color: var(--color-text-muted);
+    }
   </style>
 </head>
 <body>
