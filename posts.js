@@ -229,7 +229,7 @@
     try {
       const snapshot = await db.collection('posts')
         .orderBy('createdAt', 'desc')
-        .limit(50)
+        .limit(150)
         .get();
 
       return snapshot.docs.map(doc => ({
