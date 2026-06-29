@@ -32,8 +32,15 @@
       </nav>
       <div class="header-actions">
         <div class="header-auth" id="header-auth">
-          <button onclick="if(window.ElevateAuth) { window.ElevateAuth.showAuthModal('login'); } else { alert('System loading...'); }" class="auth-btn auth-btn-login">Log In</button>
-          <button onclick="if(window.ElevateAuth) { window.ElevateAuth.showAuthModal('signup'); } else { alert('System loading...'); }" class="auth-btn auth-btn-signup">Sign Up</button>
+          <button onclick="if(window.ElevateAuth) { window.ElevateAuth.showAuthModal('login'); } else { alert('System loading...'); }" class="auth-btn auth-btn-login" id="pre-login">Log In</button>
+          <button onclick="if(window.ElevateAuth) { window.ElevateAuth.showAuthModal('signup'); } else { alert('System loading...'); }" class="auth-btn auth-btn-signup" id="pre-signup">Sign Up</button>
+          <script>
+            if (localStorage.getItem('elevate_cached_auth') === 'true') {
+              document.getElementById('pre-login').style.display = 'none';
+              document.getElementById('pre-signup').style.display = 'none';
+              document.write('<div style="display:flex; align-items:center;"><div style="width:70px; height:36px; border-radius:6px; background:var(--color-border-light); animation:pulse 1.5s infinite opacity alternate;"></div><div style="width:36px; height:36px; border-radius:50%; background:var(--color-border-light); margin-left:8px; animation:pulse 1.5s infinite opacity alternate;"></div></div>');
+            }
+          </script>
         </div>
         <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
           <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -246,4 +253,5 @@
   <script src="script.js"></script>
 </body>
 </html>
+
 

@@ -330,6 +330,7 @@
     injectAuthModal();
     fbAuth.onAuthStateChanged(async (user) => {
       if (user) {
+        localStorage.setItem('elevate_cached_auth', 'true');
         try {
           await user.getIdToken(true);
         } catch (err) {
@@ -341,6 +342,8 @@
           }
           return;
         }
+      } else {
+        localStorage.removeItem('elevate_cached_auth');
       }
       updateHeaderUI(user);
     });
