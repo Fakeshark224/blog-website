@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Elevate - Seed 10 Articles</title>
+  <style>
+    body { font-family: 'Inter', sans-serif; background: #f8f9fa; color: #121212; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+    .card { background: white; padding: 40px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); text-align: center; max-width: 500px; }
+    h1 { margin-top: 0; color: #7C9A82; }
+    button { background: #7C9A82; color: white; border: none; padding: 12px 24px; border-radius: 6px; font-size: 16px; font-weight: 600; cursor: pointer; transition: 0.2s; margin-top: 20px; }
+    button:hover { background: #6b8571; }
+    #status { margin-top: 20px; font-size: 14px; color: #666; }
+  </style>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+  <!-- Load the config -->
+  <script src="firebase-config.js"></script>
+</head>
+<body>
+  <div class="card">
+    <h1>The Prestige Injector</h1>
+    <p>Click the button below to instantly write and publish 10 highly-detailed, beautifully formatted articles to your live Elevate database.</p>
+    <button id="seed-btn">Publish 10 Articles</button>
+    <div id="status">Ready. Make sure you are logged in on the main site first!</div>
+  </div>
+
+  <script>
+    const articles = [
+      {
+        title: "The Psychology of Minimalism: Why Less Clutter Means More Clarity",
+        excerpt: "Minimalism isn't just an aesthetic choice. It's a psychological tool for reclaiming your attention and reducing daily cognitive load.",
+        category: "Minimalism",
+        readTime: "6 min read",
+        author: "Elevate Editorial",
+        featured: true,
+        imageUrl: "https://images.unsplash.com/photo-1494438639946-1ebd1d20bf85?auto=format&fit=crop&w=1200&q=80",
+        content: `
+          <p>We often think of minimalism as a design trend—bare white walls, a single succulent, and exactly one chair. But true minimalism is deeply psychological. Every item in your physical space demands a tiny fraction of your subconscious attention. When your environment is cluttered, your mind is constantly processing that visual noise, leading to fatigue and a lack of focus.</p>
+          <h2>The Cognitive Load of Objects</h2>
+          <p>Studies have shown that physical clutter overloads our senses, making us feel stressed and impairing our ability to think creatively. By stripping away the non-essential, you aren't just making a room look better; you are literally freeing up RAM in your brain.</p>
+          <p>Consider starting small. Clear your primary workspace. Keep only the tools you use daily. Notice the immediate drop in your heart rate when you sit down at a pristine desk.</p>
+          <h2>Quality Over Quantity</h2>
+          <p>Minimalism is not about owning nothing; it's about owning the <em>right</em> things. If you are going to own fewer items, those items should be exceptionally high quality and bring you immense joy or utility.</p>
+          <p><em>(Tip: As you declutter, consider upgrading your core daily items. For example, a single, beautifully crafted <a href="https://www.amazon.com/dp/B0000YWF5E?tag=whitcrofthold-21" target="_blank" rel="noopener">premium coffee maker</a> is vastly superior to three cheap gadgets that clutter your counter.)</em></p>
+        `
+      },
+      {
+        title: "Japandi Style: The Perfect Fusion of East and West",
+        excerpt: "Discover how the functional warmth of Scandinavian design meets the elegant minimalism of Japanese aesthetics.",
+        category: "Interior Design",
+        readTime: "5 min read",
+        author: "Elevate Editorial",
+        featured: false,
+        imageUrl: "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1200&q=80",
+        content: `
+          <p>Japandi is more than just a passing interior design trend. It is the brilliant intersection of Scandinavian functionality and Japanese rustic minimalism. Both cultures share a deep appreciation for nature, craftsmanship, and simplicity.</p>
+          <h2>Key Elements of Japandi</h2>
+          <p>To achieve this look in your home, you must focus on natural materials. Think raw wood, bamboo, linen, and ceramic. The color palette should remain muted—warm whites, soft greys, pale greens, and earthy browns.</p>
+          <h2>Function Meets Form</h2>
+          <p>Unlike stark minimalism, Japandi allows for warmth. The Scandinavian concept of "Hygge" (coziness) ensures that spaces feel lived-in and comfortable, while the Japanese philosophy of "Wabi-Sabi" embraces the imperfect beauty of handcrafted items.</p>
+          <p>If you want to introduce Japandi into your home, start with your lighting. A beautiful <a href="https://www.amazon.com/dp/B0836Z47N5?tag=whitcrofthold-21" target="_blank" rel="noopener">paper lantern pendant</a> or a simple wooden floor lamp can instantly transform the mood of a room.</p>
+        `
+      },
+      {
+        title: "The Ultimate Ergonomic Desk Setup",
+        excerpt: "How to build a workspace that protects your posture without compromising on premium design.",
+        category: "Productivity",
+        readTime: "7 min read",
+        author: "Elevate Editorial",
+        featured: true,
+        imageUrl: "https://images.unsplash.com/photo-1593642632823-8f785ba67e45?auto=format&fit=crop&w=1200&q=80",
+        content: `
+          <p>For modern knowledge workers, the desk is where life happens. Yet, so many of us suffer through eight hours a day hunched over a laptop on a dining room chair. Creating a premium, ergonomic workspace is the highest-return investment you can make in your health and productivity.</p>
+          <h2>The Foundation: The Chair</h2>
+          <p>Your chair is not the place to save money. A high-quality ergonomic chair supports the natural curve of your spine and promotes active sitting. Look for chairs with dynamic lumbar support and adjustable armrests.</p>
+          <h2>Monitor Height and Eye Strain</h2>
+          <p>The top of your monitor should be perfectly level with your eyes when sitting up straight. If you work on a laptop, you absolutely must use a <a href="https://www.amazon.com/dp/B00X4D5WFY?tag=whitcrofthold-21" target="_blank" rel="noopener">laptop stand</a> paired with an external keyboard. Looking down at a screen places up to 50 pounds of pressure on your cervical spine.</p>
+          <p>Design your desk intentionally. A clean, beautiful, and healthy workspace will make you actually look forward to sitting down to work each morning.</p>
+        `
+      },
+      {
+        title: "Slow Mornings: Reclaiming the First Hour of Your Day",
+        excerpt: "Stop waking up to chaos. Here is a blueprint for designing a morning routine centered around intention and peace.",
+        category: "Wellness",
+        readTime: "4 min read",
+        author: "Elevate Editorial",
+        featured: false,
+        imageUrl: "https://images.unsplash.com/photo-1507120410856-1f35574c3b45?auto=format&fit=crop&w=1200&q=80",
+        content: `
+          <p>The way you spend the first hour of your day sets the tone for the remaining fifteen. If you wake up and immediately scroll through emails or news, you are starting your day in a state of reactive stress.</p>
+          <h2>The Ban on Morning Screens</h2>
+          <p>The core rule of a slow morning is simple: No screens for the first 60 minutes. Buy a traditional <a href="https://www.amazon.com/dp/B08M9Y3QY6?tag=whitcrofthold-21" target="_blank" rel="noopener">analog alarm clock</a> so you don't even need to bring your phone into the bedroom.</p>
+          <h2>Creating a Ritual</h2>
+          <p>Replace the scrolling with a tangible ritual. Make a pour-over coffee. Water your plants. Read ten pages of a physical book. Or simply sit in silence and watch the light change. By owning your morning, you take ownership of your entire day.</p>
+        `
+      },
+      {
+        title: "Biophilic Design: Bringing the Outside In",
+        excerpt: "Humans are not meant to live in concrete boxes. Discover how integrating nature into your home dramatically improves mental health.",
+        category: "Architecture",
+        readTime: "5 min read",
+        author: "Elevate Editorial",
+        featured: false,
+        imageUrl: "https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=1200&q=80",
+        content: `
+          <p>Biophilia is the innate human instinct to connect with nature. Modern architecture has often isolated us from the natural world, leading to spaces that feel sterile and lifeless. Biophilic design seeks to reverse this.</p>
+          <h2>More Than Just Houseplants</h2>
+          <p>While adding greenery is a great start, true biophilic design incorporates natural light, organic shapes, and natural materials like stone and unfinished wood. It is about maximizing airflow and ensuring that you have a line of sight to the outdoors wherever possible.</p>
+          <p>If your space lacks natural light, you can simulate natural cycles using smart lighting that changes color temperature throughout the day, or by adding high-quality <a href="https://www.amazon.com/dp/B07THW4J26?tag=whitcrofthold-21" target="_blank" rel="noopener">botanical art prints</a> to create visual connections to the earth.</p>
+        `
+      },
+      {
+        title: "Curating a Minimalist Capsule Wardrobe",
+        excerpt: "Eliminate decision fatigue and look effortlessly stylish every single day by radically simplifying your closet.",
+        category: "Lifestyle",
+        readTime: "6 min read",
+        author: "Elevate Editorial",
+        featured: false,
+        imageUrl: "https://images.unsplash.com/photo-1434389678241-17efb91ee732?auto=format&fit=crop&w=1200&q=80",
+        content: `
+          <p>We wear 20% of our clothes 80% of the time. The rest simply hangs in the closet, creating visual clutter and inducing daily decision fatigue. The capsule wardrobe is the antidote.</p>
+          <h2>The Rule of 30</h2>
+          <p>A true capsule wardrobe consists of 30 to 40 highly versatile, high-quality pieces that can all be mixed and matched. Stick to a cohesive color palette—usually neutrals like black, white, navy, and camel, with one or two accent colors.</p>
+          <h2>Investing in Quality</h2>
+          <p>When you own fewer clothes, they need to last longer. Stop buying fast fashion. Invest in timeless silhouettes and durable fabrics like merino wool, heavy cotton, and linen. For keeping your capsule pieces looking pristine, a good <a href="https://www.amazon.com/dp/B07T4NYX17?tag=whitcrofthold-21" target="_blank" rel="noopener">fabric steamer</a> is an absolute necessity.</p>
+        `
+      },
+      {
+        title: "Digital Decluttering: Organizing Your Screens",
+        excerpt: "Your digital environment is just as important as your physical one. Here is how to clean it up.",
+        category: "Tech",
+        readTime: "4 min read",
+        author: "Elevate Editorial",
+        featured: false,
+        imageUrl: "https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?auto=format&fit=crop&w=1200&q=80",
+        content: `
+          <p>You probably spend more hours looking at a screen than looking at your living room. If your computer desktop is covered in random files and your phone has 80 unread notifications, you are inducing constant low-level anxiety.</p>
+          <h2>The Inbox Zero Philosophy</h2>
+          <p>Treat your email inbox like a physical mailbox. You wouldn't leave a letter in your mailbox for six months. Read it, archive it, or delete it. The goal is to end every day with zero emails in the primary view.</p>
+          <h2>Phone Minimalism</h2>
+          <p>Delete every app you haven't used in 30 days. Turn off all non-essential notifications. Change your phone's wallpaper to a solid dark color to reduce the dopamine hit when you unlock it. You control the technology; do not let it control you.</p>
+        `
+      },
+      {
+        title: "The Art of Lighting: Designing the Mood",
+        excerpt: "Why the lighting in your home matters more than the furniture, and how to get it right.",
+        category: "Interior Design",
+        readTime: "5 min read",
+        author: "Elevate Editorial",
+        featured: false,
+        imageUrl: "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?auto=format&fit=crop&w=1200&q=80",
+        content: `
+          <p>You can buy the most beautiful, expensive furniture in the world, but if your room is lit by a single harsh, cool-white bulb on the ceiling, the space will feel like a hospital waiting room.</p>
+          <h2>Layering Your Light</h2>
+          <p>Good design requires three layers of light: Ambient (overall light), Task (for reading or cooking), and Accent (to highlight art or architectural features). Never rely solely on overhead lights. Use floor lamps and table lamps to create pools of warmth.</p>
+          <h2>Color Temperature</h2>
+          <p>Pay attention to Kelvin ratings. For living rooms and bedrooms, aim for 2700K to 3000K (warm white). If you want total control, invest in <a href="https://www.amazon.com/dp/B07351P1JK?tag=whitcrofthold-21" target="_blank" rel="noopener">smart LED bulbs</a> that allow you to adjust the warmth as evening approaches to support your circadian rhythm.</p>
+        `
+      },
+      {
+        title: "Wabi-Sabi: The Beauty of Imperfection",
+        excerpt: "Embracing the Japanese philosophy of transience and imperfection in your home and life.",
+        category: "Lifestyle",
+        readTime: "4 min read",
+        author: "Elevate Editorial",
+        featured: false,
+        imageUrl: "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=1200&q=80",
+        content: `
+          <p>In a world obsessed with flawless, mass-produced symmetry, Wabi-Sabi offers a refreshing alternative. It is a worldview centered on the acceptance of transience and imperfection.</p>
+          <h2>Authenticity in Design</h2>
+          <p>Wabi-Sabi celebrates natural materials that show signs of age and wear. A wooden table with scratches tells a story. A handmade ceramic mug with an asymmetrical glaze has soul. Instead of striving for a pristine showroom aesthetic, allow your home to reflect the reality of human life.</p>
+          <p>Find beauty in the cracked, the weathered, and the handmade.</p>
+        `
+      },
+      {
+        title: "Intentional Living: Stop Drifting, Start Designing",
+        excerpt: "How to take the reins of your life by applying design-thinking to your daily choices.",
+        category: "Wellness",
+        readTime: "8 min read",
+        author: "Elevate Editorial",
+        featured: true,
+        imageUrl: "https://images.unsplash.com/photo-1490730141103-6cac27aaab94?auto=format&fit=crop&w=1200&q=80",
+        content: `
+          <p>Most people live by default. They accept the career, the habits, and the lifestyle that simply happened to fall into their lap. Intentional living is the radical act of designing your life on purpose.</p>
+          <h2>Auditing Your Time</h2>
+          <p>You cannot be intentional if you don't know where your resources are going. Spend one week tracking exactly how you spend every 30-minute block of your day. You will likely be horrified by how much time is lost to meaningless distractions.</p>
+          <h2>Defining Your Core Values</h2>
+          <p>Write down your top three values. Is it freedom? Creativity? Health? Family? Once you define these, every decision becomes simple: Does this choice move me closer to my core values, or further away?</p>
+          <p>If you want a fantastic guide to mastering this mindset, I highly recommend reading <a href="https://www.amazon.com/dp/0804137382?tag=whitcrofthold-21" target="_blank" rel="noopener">Essentialism by Greg McKeown</a>. It will fundamentally change how you view your time and energy.</p>
+        `
+      }
+    ];
+
+    document.getElementById('seed-btn').addEventListener('click', async () => {
+      const statusEl = document.getElementById('status');
+      
+      if (!fbAuth.currentUser) {
+        statusEl.innerHTML = "<span style='color:red;'>Error: You must be logged in! Please go to your blog, log in, and then refresh this page.</span>";
+        return;
+      }
+
+      statusEl.textContent = "Publishing articles to Firestore... Please wait.";
+      document.getElementById('seed-btn').disabled = true;
+
+      try {
+        const batch = db.batch();
+        for (const article of articles) {
+          const docRef = db.collection('posts').doc();
+          batch.set(docRef, {
+            ...article,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            likes: Math.floor(Math.random() * 50) + 10,
+            views: Math.floor(Math.random() * 500) + 100
+          });
+        }
+        await batch.commit();
+        statusEl.innerHTML = "<span style='color:green;'>Success! 10 highly detailed articles have been published to your live Elevate blog.</span>";
+      } catch (err) {
+        statusEl.innerHTML = "<span style='color:red;'>Error: " + err.message + "</span>";
+        console.error(err);
+      }
+    });
+  </script>
+</body>
+</html>
+
