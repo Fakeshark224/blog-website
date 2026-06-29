@@ -235,6 +235,7 @@ body.dark-mode .site-header.scrolled {
   align-items: center;
   justify-content: space-between;
   height: 100%;
+  position: relative;
 }
 
 .logo {
@@ -261,6 +262,9 @@ body.dark-mode .site-header.scrolled {
   display: flex;
   align-items: center;
   gap: var(--space-10);
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .nav-links a {
